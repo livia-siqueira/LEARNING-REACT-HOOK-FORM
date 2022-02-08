@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { useForm } from "react-hook-form";
-import LogRocket from 'logrocket';
-import * as yup from 'yup'
-LogRocket.init('fzxpr4/learning-react-hook-form');
+import LogRocket from "logrocket";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+LogRocket.init("fzxpr4/learning-react-hook-form");
 
 interface valuesForm {
   Name: string;
@@ -15,8 +16,8 @@ interface valuesForm {
 const schema = yup.object().shape({
   Name: yup.string().required("Name is required"),
   Email: yup.string().email("Email invalid").required("Email is required"),
-  Telephone: yup.string().required("Telephone is required")
-})
+  Telephone: yup.string().required("Telephone is required"),
+});
 
 function App() {
   const {
@@ -29,12 +30,14 @@ function App() {
       Email: "",
       Telephone: "",
     },
+    resolver: yupResolver(schema),
   });
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [telephone, setTelephone] = useState("");
 
-  const onFormSubmit = (data: valuesForm) => schema.isValid(data).then(valid => console.log(valid));
+  const onFormSubmit = (data: valuesForm) =>
+    schema.isValid(data).then((valid) => console.log(valid));
   const problemFormSubmit = (error: any) => console.log(error);
 
   const submitFormControlled = () => {
@@ -52,20 +55,12 @@ function App() {
       <div>
         <h2>React-Hook-Form</h2>
         <form onSubmit={handleSubmit(onFormSubmit, problemFormSubmit)}>
-          <input
-            placeholder="Name"
-            {...register("Name", registerValidation.name)}
-          />
+          <input placeholder="Name" {...register("Name")} />
           {errors?.Name && errors.Name?.message}
-          <input
-            placeholder="Email"
-            {...register("Email")}
-          />
+          <input placeholder="Email" {...register("Email")} />
           {errors?.Email && errors.Email?.message}
-          <input
-            placeholder="Telephone"
-            {...register("Telephone", registerValidation.telephone)}
-          />
+          <input placeholder="Telephone" {...register("Telephone")} />
+          {errors?.Telephone && errors.Telephone?.message}
           <button type="submit">Submit</button>
         </form>
       </div>
