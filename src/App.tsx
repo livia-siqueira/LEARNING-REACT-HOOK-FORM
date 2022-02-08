@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import { useForm } from "react-hook-form";
 import LogRocket from 'logrocket';
+import * as yup from 'yup'
 LogRocket.init('fzxpr4/learning-react-hook-form');
 
 interface valuesForm {
@@ -10,6 +11,12 @@ interface valuesForm {
   Email: string;
   Telephone: string;
 }
+
+const schema = yup.object().shape({
+  Name: yup.string().required("Name is required"),
+  Email: yup.string().email("Email invalid").required("Email is required"),
+  Telephone: yup.string().required("Telephone is required")
+})
 
 function App() {
   const {
@@ -27,7 +34,7 @@ function App() {
   const [name, setName] = useState("");
   const [telephone, setTelephone] = useState("");
 
-  const onFormSubmit = (data: valuesForm) => console.log(data);
+  const onFormSubmit = (data: valuesForm) => schema.isValid(data).then(valid => console.log(valid));
   const problemFormSubmit = (error: any) => console.log(error);
 
   const submitFormControlled = () => {
@@ -52,7 +59,7 @@ function App() {
           {errors?.Name && errors.Name?.message}
           <input
             placeholder="Email"
-            {...register("Email", registerValidation.email)}
+            {...register("Email")}
           />
           {errors?.Email && errors.Email?.message}
           <input
